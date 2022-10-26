@@ -48,7 +48,7 @@ function setMeme(id) {
         selectedLineIdx: 0,
         lines: [
             {
-                txt: 'I sometimes eat Falafel',
+                txt: 'test1',
                 size: getRandomIntInclusive(50, 70),
                 align: 'left',
                 color: '#f00f0f',
@@ -56,7 +56,7 @@ function setMeme(id) {
                 posY: 50,
             },
             {
-                txt: 'I always eat Shuarma!',
+                txt: 'test2',
                 size: getRandomIntInclusive(30, 40),
                 align: 'left',
                 color: '#f00f0f',
@@ -71,6 +71,9 @@ function setMeme(id) {
 
 function setLineTxt(txt) {
     gMeme.lines[gMeme.selectedLineIdx].txt = txt
+    // if (gMeme.lines[gMeme.selectedLineIdx].posX + gCtx.measureText(txt).width >= gElCanvas.width) {
+    //     gMeme.lines[gMeme.selectedLineIdx].posY += (gMeme.lines[gMeme.selectedLineIdx].size + 10) * 2
+    // }
     // console.log(gMeme.lines[gMeme.selectedLineIdx].txt)
 }
 
@@ -93,7 +96,6 @@ function switchLine() {
     else
         gMeme.selectedLineIdx++
 
-    // console.log(gMeme.selectedLineIdx)
 
 }
 
@@ -119,11 +121,10 @@ function setIsClicked(isClicked) {
 }
 
 function isLineClicked({ x, y }) {
-    gMeme.lines.forEach(({posX , posY , txt , size} , idx) => {
+    gMeme.lines.forEach(({ posX, posY, txt, size }, idx) => {
         if (posX - 5 <= x && x <= posX + gCtx.measureText(txt).width + 10
             && y >= posY - size && y <= size + 10 + y)
             gMeme.selectedLineIdx = idx
     });
-    console.log(x , y)
 }
 

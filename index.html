@@ -10,26 +10,41 @@
 </head>
 
 <body onload="onInit()">
-    <h1>My Meme Generator</h1>
 
-    <section class="gallery-container grid-container">
-        <img class="grid-item" src="./meme-imgs (square)/1.jpg" alt="">
-        <img class="grid-item" src="./meme-imgs (square)/2.jpg" alt="">
-        <img class="grid-item" src="./meme-imgs (square)/3.jpg" alt="">
+    <header class="main-header flex">
+        <div class="logo">MEMEGEN!</div>
+        <nav class="main-nav">
+            <button onclick="onOpenGallery()">Gallery</button>
+            <a href="#">About</a>
+        </nav>
+    </header>
+    <section class="gallery-container">
+        <header class="gallery-header">
+            <label for="search-input">Search:</label>
+            <input type="text" class="search" id="search-input" oninput="onSetLineTxt(this.value)"
+                placeholder="Enter Text..." />
+            <button>More</button>
+        </header>
+        <div class="grid-container"></div>
     </section>
 
-    <section class="editor-container canvas-container">
-        <label for="txt-input">Edit Meme</label>
-        <input type="text" class="txt-edit" id="txt-input" oninput="onSetLineTxt(this.value)" placeholder="Enter Text..." />
+    <section class="editor-container hide flex">
+        <div class="canvas-container">
+            <canvas class="my-canvas" id="my-canvas" height="500" width="500" onclick="renderMeme()"></canvas>
+        </div>
 
-        <label for="color-input">Select Text color:</label>
-        <input type="color" id="color-input" class="color-edit" oninput="onSetTextColor(this.value)">
+        <div class="canvas-features">
+            <label for="txt-input">Edit Meme</label>
+            <input type="text" class="txt-edit" id="txt-input" oninput="onSetLineTxt(this.value)"
+                placeholder="Enter Text..." />
+            <label for="color-input">Select Text color:</label>
+            <input type="color" id="color-input" class="color-edit" oninput="onSetTextColor(this.value)">
+            <button onclick="onSetFontSize(1)">+</button>
+            <button onclick="onSetFontSize(-1)">-</button>
+            <button onclick="onSwitchLine()">Change Line</button>
+            <button onclick="onAddLine()">Add New Line</button>
+        </div>
 
-        <button onclick="onSetFontSize(1)">+</button>
-        <button onclick="onSetFontSize(-1)">-</button>
-        <button onclick="onSwitchLine()">Change Line</button>
-        <button onclick="onAddLine()">Add New Line</button>
-        <canvas class="my-canvas" id="my-canvas" height="500" width="500" onclick="renderMeme()"></canvas>
     </section>
 
     <!-- <script src="js/services/upload.services.js"></script> -->

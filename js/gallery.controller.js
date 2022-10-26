@@ -8,7 +8,7 @@ function renderImgs() {
         `
     )
     // console.log(strHTMLS)
-    document.querySelector('.gallery-container').innerHTML = strHTMLS.join('')
+    document.querySelector('.grid-container').innerHTML = strHTMLS.join('')
     // console.log(document.querySelector('.gallery-container'))
 
 }
@@ -18,4 +18,12 @@ function onImgSelect(elImg){
     document.querySelector('.txt-edit').value = ''
     setImg(elImg.dataset.imgid)
     renderMeme()
+
+    document.querySelector('.editor-container').classList.remove('hide')
+    document.querySelector('.gallery-container').classList.add('hide')
+}
+
+function onOpenGallery() {
+    document.querySelector('.editor-container').classList.add('hide')
+    document.querySelector('.gallery-container').classList.remove('hide')
 }

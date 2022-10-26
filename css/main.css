@@ -1,23 +1,101 @@
-body {
-    background-color: rgb(201, 161, 108);
+:root {
+    --clr-primary: #58c93a;
+    /* pallet */
+    /* --clr4: #1e1e1e; */
+    --clr5: #ebeef3;
+    --clr4: #fefefe;
+    --clr3: #5970c1;
+    --clr2: #383b42;
+    --clr1: #22252c;
+
+    /* sizes */
+    --l: 980px;
+    --m: 860px;
+    --s: 740px;
 }
 
-.hide {
-    display: none;
+/* TYPOGRAPHY*/
+
+@font-face {
+    font-family: poppins;
+    src: url("/fonts/poppins/Poppins-Regular.ttf");
+}
+
+/* BASE */
+html {
+    font-family: "poppins";
+}
+
+body {
+    background-color: var(--clr1);
+    margin: 0;
+    padding: 15px;
+}
+
+img {
+    object-fit: contain;
+    width: 100%;
+}
+
+/* MAIN HEADER */
+
+.main-header {
+    background-color: var(--clr3);
+    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
+    border-radius: 37px;
+    height: 73px;
+    margin-bottom: 15px;
+    padding-inline-start: 80px;
+    padding-inline-end: 250px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-header .logo {
+    width: 150px;
+    color: #fefefe;
+}
+
+/* GALLERY HEADER */
+
+.gallery-header .search {
+    background-color: var(--clr1);
+}
+
+.gallery-header button {
+    background-color: var(--clr3);
+    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
+}
+
+/* GALLERY */
+
+.gallery-container {
+    background-color: var(--clr2);
+    border-radius: 10px;
+    padding: 25px;
 }
 
 .grid-container {
+    padding: 50px 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, 200px);
     grid-auto-rows: 200px;
-    gap: 20px;
+    gap: 25px 30px;
+    justify-content: center;
 }
 
 .grid-item {
     border-radius: 20px;
-    object-fit: contain;
-    width: 100%;
 }
+
+
+/* EDITOR */
+.editor-container {
+    justify-content: space-between;
+    /* background-image: url("../pics/Forme_1.png"); */
+}
+
+/* CANVAS */
 
 
 canvas {
@@ -29,9 +107,55 @@ canvas {
 
 .canvas-container {
     margin: 0 auto;
-    width: 50%;
+    max-width: 500px;
+    max-height: 500px;
     height: 50%;
 }
+
+.canvas-features {
+    max-width: 500px;
+    max-height: 500px;
+    border-radius: 30px;
+    background-color: var(--clr5);
+    /* opacity: 0.11; */
+    padding: 25px 40px;
+}
+
+/* BUTTONS */
+
+button,
+.btn {
+    border-radius: 18px;
+}
+
+/* HELPERS */
+
+.flex {
+    display: flex;
+}
+
+.hide {
+    display: none;
+}
+
+/* SCROLL BAR */
+
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: var(--clr3);
+    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
+    border-radius: 7px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 7px;
+    background-color: #22252c;
+}
+
 
 @media (max-width: 420px) {
     .grid-container {

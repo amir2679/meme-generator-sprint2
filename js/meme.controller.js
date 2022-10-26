@@ -31,31 +31,25 @@ function drawText() {
 
     memeLines.forEach(({ size, txt, posX, posY, color }, idx) => {
         // console.log(size, txt, posX, posY, color)
+        // console.log(posX + gCtx.measureText(txt).width)
+        // if (posX + gCtx.measureText(txt).width >= gElCanvas.width) {
+        //     memeLines[idx].posY += (size + 10)
+        // }
+
         gCtx.strokeStyle = color
         gCtx.fillStyle = color
         gCtx.font = `${size}px Arial`
-        gCtx.fillText(txt, posX, posY)
-        gCtx.strokeText(txt, posX, posY)
+        gCtx.fillText(txt, posX, posY ,gElCanvas.width - posX - size)
+        gCtx.strokeText(txt, posX, posY , gElCanvas.width - posX - size)
 
         if (idx === getMeme().selectedLineIdx) {
             markTxtLIne(memeLines[idx])
         }
-    });
+
+    })
 
 
-    // if (!lineIdx) {
-    //     gCtx.font = `${size}px Arial`
-    //     gCtx.fillText(text, x, y)
-    //     gCtx.strokeText(text, x, y)
-    //     markTxtLIne(x, y, text, size)
-    // }
-    // else {
-    //     gCtx.font = `${size}px Arial`
-    //     gCtx.fillText(text, x, gElCanvas.height - size)
-    //     gCtx.strokeText(text, x, gElCanvas.height - size)
-    // }
 
-    // markTxtLIne(x , y ,text , size)
 }
 
 function onSetLineTxt(txt) {
@@ -64,7 +58,6 @@ function onSetLineTxt(txt) {
 }
 
 function onSetTextColor(color) {
-    // console.log(color)
     setColor(color)
 }
 
@@ -89,8 +82,21 @@ function markTxtLIne({ posX, posY, txt, size }) {
     gCtx.strokeStyle = 'black'
     // const distance = Math.sqrt((pos.x - clickedPos.x) ** 2 + (pos.y - clickedPos.y) ** 2)
     // console.log(posX, posY, gCtx.measureText(txt).width, gCtx.measureText(txt).height)
+
+
+    // if (posX + gCtx.measureText(txt).width >= gElCanvas.width) {
+    //     gCtx.strokeRect(posX - 5, posY - size, gCtx.measureText(txt).width + 10, (size + 10) * 2)
+    //     // getMeme().lines[getMeme().selectedLineIdx].posY *= 2
+    // }
+    // else 
     gCtx.strokeRect(posX - 5, posY - size, gCtx.measureText(txt).width + 10, size + 10)
 }
+
+// function renderNewLine() {
+//     if (posX + gCtx.measureText(txt).width >= gElCanvas.width) {
+//         console.log(getMeme.lines[getMeme.selectedLineIdx].posX)
+//     }
+// }
 
 function onAddLine() {
     addLine()
@@ -163,4 +169,18 @@ function getEvPos(ev) {
         }
     }
     return pos
+}
+
+function renderCanvas() {
+    gCtx.fillStyle = "white"
+
+    gCtx.fillRect(0, 0, gElCanvas.width, gElCanvas.height)
+
+    // need render?
+}
+
+function resizeCanvas() {
+    const elContainer = document.querySelector('.canvas-container')
+    gElCanvas.width = elContainer.offsetWidth
+    gElCanvas.height = elContainer.offsetHeight
 }
