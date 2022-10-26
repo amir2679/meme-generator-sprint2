@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body onload="onInit()">
+    <h1>My Meme Generator</h1>
+
+    <section class="gallery-container grid-container">
+        <img class="grid-item" src="./meme-imgs (square)/1.jpg" alt="">
+        <img class="grid-item" src="./meme-imgs (square)/2.jpg" alt="">
+        <img class="grid-item" src="./meme-imgs (square)/3.jpg" alt="">
+    </section>
+
+    <section class="editor-container canvas-container">
+        <label for="txt-input">Edit Meme</label>
+        <input type="text" class="txt-edit" id="txt-input" oninput="onSetLineTxt(this.value)" placeholder="Enter Text..." />
+
+        <label for="color-input">Select Text color:</label>
+        <input type="color" id="color-input" class="color-edit" oninput="onSetTextColor(this.value)">
+
+        <button onclick="onSetFontSize(1)">+</button>
+        <button onclick="onSetFontSize(-1)">-</button>
+        <button onclick="onSwitchLine()">Change Line</button>
+        <button onclick="onAddLine()">Add New Line</button>
+        <canvas class="my-canvas" id="my-canvas" height="500" width="500" onclick="renderMeme()"></canvas>
+    </section>
+
+    <!-- <script src="js/services/upload.services.js"></script> -->
+    <script src="js/services/storage.service.js"></script>
+    <script src="js/services/util.service.js"></script>
+    <script src="js/services/meme.service.js"></script>
+    <script src="js/meme.controller.js"></script>
+    <script src="js/gallery.controller.js"></script>
+</body>
+
+</html>
