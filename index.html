@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meme Generator</title>
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://kit.fontawesome.com/6036d27597.js" crossorigin="anonymous"></script>
 </head>
 
 <body onload="onInit()">
@@ -14,15 +15,22 @@
     <header class="main-header flex">
         <div class="logo">MEMEGEN!</div>
         <nav class="main-nav">
-            <button onclick="onOpenGallery()">Gallery</button>
-            <a href="#">About</a>
+            <button onclick="onOpenGallery()" class="btn">Gallery</button>
+            <button onclick="onOpenSavedMemes()" class="btn">Memes</button>
+            <label for="img-input" class="btn">Create Meme</label>
+            <input type="file" class="img-input btn hide" name="image" id="img-input"
+                onchange="onCreateCustomMeme(event)" />
+            <button class="btn">About</button>
         </nav>
     </header>
-    <section class="gallery-container">
-        <header class="gallery-header">
-            <label for="search-input">Search:</label>
-            <input type="text" class="search" id="search-input" oninput="onSetLineTxt(this.value)"
-                placeholder="Enter Text..." />
+    <section class="gallery-container flex">
+        <header class="gallery-header flex">
+            <!-- <label for="search-input">Search:</label> -->
+            <input type="text" class="search" id="search-input" oninput="onSetImgFilter(this.value)"
+                placeholder="Search..." />
+            <!-- <div class="gallery-nav"> -->
+                <div class="key-words">Funny Animal Men Woman</div>
+                <button onclick="onGenerateRandMeme()">I'm Flexible</button>
             <button>More</button>
         </header>
         <div class="grid-container"></div>
@@ -34,20 +42,58 @@
         </div>
 
         <div class="canvas-features">
-            <label for="txt-input">Edit Meme</label>
+            <!-- <label for="txt-input" class="txt-edit-lbl">Edit Meme</label> -->
             <input type="text" class="txt-edit" id="txt-input" oninput="onSetLineTxt(this.value)"
-                placeholder="Enter Text..." />
-            <label for="color-input">Select Text color:</label>
-            <input type="color" id="color-input" class="color-edit" oninput="onSetTextColor(this.value)">
-            <button onclick="onSetFontSize(1)">+</button>
-            <button onclick="onSetFontSize(-1)">-</button>
-            <button onclick="onSwitchLine()">Change Line</button>
-            <button onclick="onAddLine()">Add New Line</button>
-        </div>
+                placeholder="Edit Text" />
 
+            <div class="change-line-features">
+                <div onclick="onSwitchLine()" class="switch-line-btn btn">
+                    <i class="fa-solid fa-arrows-up-down"></i>
+                </div>
+                <div onclick="onAddLine()" class="add-line-btn btn"><i class="fa-solid fa-plus"></i></div>
+                <div onclick="onDeleteLine()" class="delete-line-btn btn"><i class="fa-solid fa-trash"></i></div>
+            </div>
+
+            <div class="edit-text-features">
+                <div class="btn" onclick="onSetFontSize(1)">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </div>
+                <div class="btn" onclick="onSetFontSize(-1)">
+                    <i class="fa-solid fa-magnifying-glass-minus"></i>
+                </div>
+
+                <div class="btn" onclick="onLocateLine('left')"><i class="fa-solid fa-align-left"></i></div>
+                <div class="btn" onclick="onLocateLine('middle')"><i class="fa-solid fa-align-center"></i></div>
+                <div class="btn" onclick="onLocateLine('right')"><i class="fa-solid fa-align-right"></i></div>
+                <select name="fonts" onchange="onChangeFont(this.value)">
+                    <option value="impact">Impact</option>
+                    <option value="poppins">Poppins</option>
+                    <option value="sans-serif">Sans-serif</option>
+                </select>
+                <label for="color-input" class="color-lbl" id="color-lbl"><i class="fa-solid fa-droplet"></i></label>
+                <input type="color" id="color-input" class="color-edit" oninput="onSetTextColor(this.value)">
+            </div>
+
+
+            <div class="emoji-selector">EMOJIS</div>
+
+            <div class="update-features flex">
+                <button class="update-btn" onclick="onUpload()">Upload</button>
+                <!-- <button class="download-btn" onclick="onDownload()">Download</button> -->
+                <a href="#" class="btn" onclick="onDownload(this)" download="my-img.jpg">Download</a>
+                <a href="#" class="btn" onclick="onSaveImg(this)">Save</a>
+                <!-- <button class="save-btn" onclick="onSaveMeme()">Save</button> -->
+                <!-- download="my-img.jpg" -->
+            </div>
+        </div>
+        <div class="share-modal hide-modal">
+            <div class="share-modal-link"></div>
+            <div class="user-msg"></div>
+            <button onclick="onCloseShareModal()">close</button>
+        </div>
     </section>
 
-    <!-- <script src="js/services/upload.services.js"></script> -->
+    <script src="js/services/upload.services.js"></script>
     <script src="js/services/storage.service.js"></script>
     <script src="js/services/util.service.js"></script>
     <script src="js/services/meme.service.js"></script>

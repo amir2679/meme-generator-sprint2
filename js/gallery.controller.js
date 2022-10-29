@@ -13,17 +13,99 @@ function renderImgs() {
 
 }
 
-function onImgSelect(elImg){
+function renderSavedMemes() {
+    const savedMemes = getSavedMemes()
+
+    var strHTMLS = savedMemes.map((meme, idx) =>
+        `
+        <img onclick="onSavedMemeSelect(this)" class="grid-item" src="${meme.imgUrl}"  data-memeIdx="${idx}">
+        `
+    )
+    document.querySelector('.grid-container').innerHTML = strHTMLS.join('')
+}
+
+function onSavedMemeSelect(elImg) {
+    setGMeme(getSavedMemes()[elImg.dataset.memeidx])
+
+    renderCanvas()
+    renderMeme()
+    renderEditBtns()
+
+    toggleGalleryEditor('editor')
+
+}
+
+function onImgSelect(elImg) {
     // console.log('hi')
-    document.querySelector('.txt-edit').value = ''
+    // document.querySelector('.txt-edit').value = ''
     setImg(elImg.dataset.imgid)
     renderMeme()
+    renderEditBtns()
+    resizeCanvas()
 
-    document.querySelector('.editor-container').classList.remove('hide')
-    document.querySelector('.gallery-container').classList.add('hide')
+    toggleGalleryEditor('editor')
 }
 
 function onOpenGallery() {
-    document.querySelector('.editor-container').classList.add('hide')
-    document.querySelector('.gallery-container').classList.remove('hide')
+    renderImgs()
+
+    toggleGalleryEditor('gallery')
+}
+
+function onGenerateRandMeme() {
+    createRandMeme()
+    renderMeme()
+    renderEditBtns()
+
+    toggleGalleryEditor('editor')
+}
+
+function onOpenSavedMemes() {
+    loadSavedMemes()
+    // _savedMemesInit()
+    console.log(gSavedMemes)
+    if (!getSavedMemes() || !getSavedMemes().length) return
+
+    toggleGalleryEditor('gallery')
+    renderSavedMemes()
+}
+
+
+function toggleGalleryEditor(show) {
+    switch (show) {
+        case 'gallery':
+            document.querySelector('.editor-container').classList.add('hide')
+            document.querySelector('.gallery-container').classList.remove('hide')
+            break;
+
+        case 'editor':
+            document.querySelector('.editor-container').classList.remove('hide')
+            document.querySelector('.gallery-container').classList.add('hide')
+            break;
+    }
+}
+
+function renderKeywords(keywordSearchCountMap) {
+    let strKeywords = ''
+    for (const keyword in keywordSearchCountMap) {
+        let size = keywordSearchCountMap[keyword]
+        strKeywords += `
+        <span style="font-size:${size*1.2 + 20}px">${keyword}</span>`
+    }
+    // console.log(strKeywords)
+    let elKeywords = document.querySelector('.key-words')
+    elKeywords.innerHTML = strKeywords
+    elKeywords.style.fontSize = ``
+}
+
+function onSaveImg(elLink) {
+    const imgContent = gElCanvas.toDataURL('image/jpeg')
+    console.log(imgContent)
+    setImgContent(imgContent)
+}
+
+function onSetImgFilter(txt) {
+    setImgFilter(txt)
+    renderKeywords(getKeywordSearchCountMap())
+    renderImgs()
 }

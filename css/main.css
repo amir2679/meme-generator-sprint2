@@ -1,7 +1,14 @@
+@import '../css/gallery.css';
+@import '../css/editor.css';
+@import '../css/modals.css';
+@import '../css/break-points.css';
+
 :root {
     --clr-primary: #58c93a;
     /* pallet */
     /* --clr4: #1e1e1e; */
+    --clr7: #ffffff;
+    --clr6: #21ac91;
     --clr5: #ebeef3;
     --clr4: #fefefe;
     --clr3: #5970c1;
@@ -21,20 +28,39 @@
     src: url("/fonts/poppins/Poppins-Regular.ttf");
 }
 
+@font-face {
+    font-family: poppins-SB;
+    src: url("/fonts/poppins/Poppins-SemiBold.ttf");
+}
+
+@font-face {
+    font-family: poppins-EB;
+    src: url("/fonts/poppins/Poppins-ExtraBold.ttf");
+}
+
 /* BASE */
 html {
     font-family: "poppins";
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
     background-color: var(--clr1);
     margin: 0;
     padding: 15px;
+    height: 100%;
 }
 
 img {
-    object-fit: contain;
+    object-fit: cover;
     width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 500px;
 }
 
 /* MAIN HEADER */
@@ -54,78 +80,36 @@ img {
 .main-header .logo {
     width: 150px;
     color: #fefefe;
+    font-size: 1.375rem;
 }
 
-/* GALLERY HEADER */
-
-.gallery-header .search {
-    background-color: var(--clr1);
-}
-
-.gallery-header button {
-    background-color: var(--clr3);
-    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
-}
-
-/* GALLERY */
-
-.gallery-container {
-    background-color: var(--clr2);
-    border-radius: 10px;
-    padding: 25px;
-}
-
-.grid-container {
-    padding: 50px 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 200px);
-    grid-auto-rows: 200px;
-    gap: 25px 30px;
-    justify-content: center;
-}
-
-.grid-item {
-    border-radius: 20px;
-}
-
-
-/* EDITOR */
-.editor-container {
-    justify-content: space-between;
-    /* background-image: url("../pics/Forme_1.png"); */
-}
-
-/* CANVAS */
-
-
-canvas {
-    display: block;
-    margin: 0 auto;
-    border: 2px solid black;
-    background-color: white;
-}
-
-.canvas-container {
-    margin: 0 auto;
-    max-width: 500px;
-    max-height: 500px;
-    height: 50%;
-}
-
-.canvas-features {
-    max-width: 500px;
-    max-height: 500px;
-    border-radius: 30px;
-    background-color: var(--clr5);
-    /* opacity: 0.11; */
-    padding: 25px 40px;
-}
 
 /* BUTTONS */
 
 button,
 .btn {
-    border-radius: 18px;
+    border-radius: 20px;
+    transition: .4s;
+    padding: 10px 20px;
+    color: var(--clr4);
+}
+
+button:hover , .btn:hover {
+    cursor: pointer;
+}
+
+
+/* MAIN HEADER BUTTONS */
+
+.main-header .btn {
+    background-color: inherit;
+    border: none;
+    font-size: 1.3125rem;
+}
+
+.main-header .btn:hover {
+    background-color: var(--clr4);
+    color: var(--clr6);
 }
 
 /* HELPERS */
@@ -154,13 +138,4 @@ button,
 ::-webkit-scrollbar-track {
     border-radius: 7px;
     background-color: #22252c;
-}
-
-
-@media (max-width: 420px) {
-    .grid-container {
-        /* grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); */
-        grid-template-columns: 1fr;
-    }
-
 }

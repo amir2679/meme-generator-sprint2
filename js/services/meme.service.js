@@ -1,41 +1,54 @@
 'use strict'
 
-const IMGS_STORAGE_KEY = 'imgsDB'
+const SAVED_MEMES_STORAGE_KEY = 'memesDB'
+let gSavedMemes = []
 let gImgs = []
-let gMeme = {
-    selectedImgId: 5,
-    selectedLineIdx: 0,
-    lines: [
-        {
-            txt: 'I sometimes eat Falafel',
-            size: 20,
-            align: 'left',
-            color: 'red'
-        }
-    ]
-}
+let gMeme
+let gFilterByTxt
+let gKeywordSearchCountMap = { 'baby': 12, 'president': 2, 'woman': 20, 'man': 1, 'animel': 5, 'movie': 3, 'kiss': 2 }
+const imgsKeywords = [
+    ['woman'], ['president', 'man'], ['animel'], ['baby', 'animel'],
+    ['baby'], ['animel'], ['man'], ['baby'],
+    ['movie'], ['movie'], ['movie', 'man'], ['movie', 'man'],
+    ['baby'], ['president', 'man'], ['baby'],
+    ['animel'], ['president', 'man'], ['kiss'], ['movie'],
+    ['movie'], ['movie'], ['movie'], ['movie'],
+    ['president', 'man'], ['movie']
+]
 
 
 
 _createImgs()
+_savedMemesInit()
 
 function _createImgs() {
-    let imgs = loadFromStorage(IMGS_STORAGE_KEY)
-    if (!imgs || !imgs.length) {
-        imgs = []
-        for (var i = 0; i < 18; i++) {
-            let img = { id: i + 1, url: `./meme-imgs (square)/${i + 1}.jpg` }
-            imgs.push(img)
-        }
+    let imgs = []
+    for (var i = 0; i < 24; i++) {
+        // let imgRatio = 
+        const img = { id: i + 1, url: `./meme-imgs (various aspect ratios)/${i + 1}.jpg`, keywords: imgsKeywords[i] }
+        imgs.push(img)
     }
 
     gImgs = imgs
-    saveToStorage(IMGS_STORAGE_KEY, gImgs)
+}
+
+function _savedMemesInit() {
+    let savedMemes = loadFromStorage(SAVED_MEMES_STORAGE_KEY)
+    if (!gSavedMemes || !gSavedMemes.length) {
+        // console.log('hi')
+        savedMemes = []
+    }
+
+    gSavedMemes = savedMemes
+    saveToStorage(SAVED_MEMES_STORAGE_KEY, gSavedMemes)
 }
 
 
 function getImgs() {
-    return gImgs
+    if (!gFilterByTxt) return gImgs
+
+    const imgsToRender = gImgs.filter(img => (img.keywords.some(word => word.includes(gFilterByTxt))))
+    return imgsToRender
 }
 
 function getMeme() {
@@ -48,20 +61,28 @@ function setMeme(id) {
         selectedLineIdx: 0,
         lines: [
             {
-                txt: 'test1',
-                size: getRandomIntInclusive(50, 70),
+                txt: 'FALAFEL!',
+                size: getRandomIntInclusive(20, 30),
                 align: 'left',
                 color: '#f00f0f',
-                posX: 50,
+                posX: 100,
                 posY: 50,
+                isDrag: false,
+                font: 'impact',
+                lineFrame: {
+                }
             },
             {
-                txt: 'test2',
+                txt: 'SHUARMA?',
                 size: getRandomIntInclusive(30, 40),
                 align: 'left',
                 color: '#f00f0f',
                 posX: 130,
                 posY: 130,
+                isDrag: false,
+                font: 'impact',
+                lineFrame: {
+                }
             }
         ]
     }
@@ -69,12 +90,13 @@ function setMeme(id) {
     gMeme = currMeme
 }
 
+function setLineFrame(x = 10, width = gElCanvas.width - 20) {
+    getSelectedLine().lineFrame.posX = x
+    getSelectedLine().lineFrame.width = width
+}
+
 function setLineTxt(txt) {
     gMeme.lines[gMeme.selectedLineIdx].txt = txt
-    // if (gMeme.lines[gMeme.selectedLineIdx].posX + gCtx.measureText(txt).width >= gElCanvas.width) {
-    //     gMeme.lines[gMeme.selectedLineIdx].posY += (gMeme.lines[gMeme.selectedLineIdx].size + 10) * 2
-    // }
-    // console.log(gMeme.lines[gMeme.selectedLineIdx].txt)
 }
 
 function setImg(imgId) {
@@ -96,7 +118,7 @@ function switchLine() {
     else
         gMeme.selectedLineIdx++
 
-
+    setIsClicked(true)
 }
 
 function addLine() {
@@ -112,19 +134,155 @@ function createLine() {
         color: '#f00f0f',
         posX: 300,
         posY: 300,
-        isClicked: false
+        isDrag: false,
+        font: 'impact',
+        lineFrame: {
+        }
     }
+  
 }
 
 function setIsClicked(isClicked) {
     gMeme.lines[gMeme.selectedLineIdx].isClicked = isClicked
 }
 
-function isLineClicked({ x, y }) {
-    gMeme.lines.forEach(({ posX, posY, txt, size }, idx) => {
-        if (posX - 5 <= x && x <= posX + gCtx.measureText(txt).width + 10
-            && y >= posY - size && y <= size + 10 + y)
+function isLineClicked(pos) {
+    let isClicked = false
+    // gMeme.lines.forEach((line, idx) => {
+    //     if (isCursorInLineFrame(pos ,line)) {
+    //         console.log('hi')
+    //         gMeme.selectedLineIdx = idx
+    //         isClicked = true
+    //     }
+    // })
+    gMeme.lines.forEach((line, idx) => {
+        if (pos.y > line.posY - line.size && pos.y < line.posY + line.size + 10) {
             gMeme.selectedLineIdx = idx
-    });
+            isClicked = true
+        }
+    })
+
+    return isClicked
 }
 
+function setLineDrag(isDrag) {
+    // console.log(gMeme.lines[idx])
+    gMeme.lines[gMeme.selectedLineIdx].isDrag = isDrag
+}
+
+function moveLine(dx, dy) {
+    const selectedLine = getSelectedLine()
+    selectedLine.posX += dx
+    selectedLine.posY += dy
+    moveLineMark(dx)
+}
+
+function moveLineMark(dx) {
+    getSelectedLine().lineFrame.posX += dx
+    getSelectedLine().lineFrame.width += dx
+}
+
+function resizeLine(dx , {movementX}) {
+    // console.log('hi')
+    // if (dx > 0 && movementX > 0 ) getSelectedLine().lineFrame.width += dx
+    // else getSelectedLine().lineFrame.posX += dx
+}
+
+
+function createRandMeme() {
+    const selectedImgId = getRandomIntInclusive(1, 18)
+    const selectedLineIdx = 0
+    const lineNum = getRandomIntInclusive(1, 2)
+    const lines = []
+    for (var i = 0; i < lineNum; i++) {
+        const line = {}
+        line.txt = getRandomText()
+        line.size = getRandomIntInclusive(15, 30)
+        line.align = 'left'
+        line.color = getRandomColor()
+        line.posX = getRandomIntInclusive(20, 200)
+        line.posY = getRandomIntInclusive(50, 200)
+        line.font = 'impact',
+        line.isDrag = false,
+        line.lineFrame = {}
+
+        lines.push(line)
+    }
+
+    gMeme = {
+        selectedImgId, selectedLineIdx, lines
+    }
+}
+
+function setImgContent(imgContent) {
+    // delete gMeme.selectedImgId
+    gMeme.imgUrl = imgContent
+    saveMeme()
+}
+
+
+function saveMeme() {
+    console.log(gSavedMemes)
+    gSavedMemes.unshift(gMeme)
+    saveToStorage(SAVED_MEMES_STORAGE_KEY, gSavedMemes)
+}
+
+function loadSavedMemes() {
+    gSavedMemes = loadFromStorage(SAVED_MEMES_STORAGE_KEY)
+}
+
+function getSavedMemes() {
+    return gSavedMemes
+}
+
+function setGMeme(meme) {
+    gMeme = meme
+}
+
+function deleteLine() {
+    let deletedLine = gMeme.lines.splice(gMeme.selectedLineIdx, 1)
+    if (gMeme.selectedLineIdx <= gMeme.lines.length && gMeme.selectedLineIdx > 0) {
+        gMeme.selectedLineIdx--
+        console.log('last line', gMeme.selectedLineIdx)
+    }
+    return deletedLine
+}
+
+function locateLine(direction) {
+    switch (direction) {
+        case 'left':
+            gMeme.lines[gMeme.selectedLineIdx].posX = 10
+            break;
+        case 'right':
+            gMeme.lines[gMeme.selectedLineIdx].posX = gElCanvas.width - gCtx.measureText(gMeme.lines[gMeme.selectedLineIdx].txt).width
+            break;
+        case 'middle':
+            gMeme.lines[gMeme.selectedLineIdx].posX = (gElCanvas.width - gCtx.measureText(gMeme.lines[gMeme.selectedLineIdx].txt).width) / 2
+            break;
+    }
+}
+
+function changeFont(font) {
+    gMeme.lines[gMeme.selectedLineIdx].font = font
+}
+
+function setImgFilter(txt) {
+    gFilterByTxt = txt.toLowerCase().trim()
+    const keyword = imgsKeywords.find(imgKeyword => imgKeyword.includes(gFilterByTxt))
+    if (keyword) {
+        if (gKeywordSearchCountMap[gFilterByTxt]) gKeywordSearchCountMap[gFilterByTxt]++
+        else gKeywordSearchCountMap[gFilterByTxt] = 1
+    }
+}
+
+function getKeywordSearchCountMap() {
+    return gKeywordSearchCountMap
+}
+
+function createCustomMeme() {
+
+}
+
+function getSelectedLine() {
+    return gMeme.lines[gMeme.selectedLineIdx]
+}
