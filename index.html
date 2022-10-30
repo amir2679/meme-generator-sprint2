@@ -12,7 +12,7 @@
 
 <body onload="onInit()">
 
-    <header class="main-header flex">
+    <header class="main-header flex" id="main-header">
         <div class="logo">MEMEGEN!</div>
         <nav class="main-nav">
             <button onclick="onOpenGallery()" class="btn">Gallery</button>
@@ -28,10 +28,13 @@
             <!-- <label for="search-input">Search:</label> -->
             <input type="text" class="search" id="search-input" oninput="onSetImgFilter(this.value)"
                 placeholder="Search..." />
-            <!-- <div class="gallery-nav"> -->
+            <div class="gallery-nav flex">
                 <div class="key-words">Funny Animal Men Woman</div>
-                <button onclick="onGenerateRandMeme()">I'm Flexible</button>
-            <button>More</button>
+                <div class="gallery-nav-btns">
+                    <button onclick="onGenerateRandMeme()">I'm Flexible</button>
+                    <button>More</button>
+                </div>
+            </div>
         </header>
         <div class="grid-container"></div>
     </section>
@@ -80,8 +83,8 @@
             <div class="update-features flex">
                 <button class="update-btn" onclick="onUpload()">Upload</button>
                 <!-- <button class="download-btn" onclick="onDownload()">Download</button> -->
-                <a href="#" class="btn" onclick="onDownload(this)" download="my-img.jpg">Download</a>
-                <a href="#" class="btn" onclick="onSaveImg(this)">Save</a>
+                <a href="#" class="btn download-btn" onclick="onDownload(this)" download="my-img.jpg">Download</a>
+                <a href="#" class="btn save-btn" onclick="onSaveImg(this)">Save</a>
                 <!-- <button class="save-btn" onclick="onSaveMeme()">Save</button> -->
                 <!-- download="my-img.jpg" -->
             </div>

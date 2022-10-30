@@ -195,4 +195,15 @@ canvas {
 .canvas-features .download-btn {
     background-color: #8f44bb;
     box-shadow: 1px 6px 0 #632687, inset 0 5px 0 #ffffff;
+    text-decoration: none;
+}
+
+.canvas-features .save-btn {
+    background-color: #e05d5b;
+    box-shadow: 1px 6px 0 #e05d5b, inset 0 5px 0 #ffffff;
+    text-decoration: none;
+}
+
+.update-features>*:not(:last-child) {
+    margin-right: 5px;
 }

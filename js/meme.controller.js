@@ -57,10 +57,11 @@ function drawText() {
         gCtx.strokeStyle = color
         gCtx.fillStyle = color
         gCtx.fillText(txt, posX, posY, gElCanvas.width - posX - 20)
-        console.log(gCtx.measureText(txt).width + posX)
+        // console.log(gCtx.measureText(txt).width + posX)
 
         if (idx === getMeme().selectedLineIdx) {
-            markTxtLIne(memeLines[idx], 3, gElCanvas.width - 10)
+            markTxtLIne(memeLines[idx])
+            // 3, gElCanvas.width - 10
         }
     })
 }
@@ -130,14 +131,8 @@ function onSetFontSize(multiplier) {
 
 function onSwitchLine() {
     switchLine()
-    const currMeme = getMeme()
-    // const currMemeLine = currMeme.lines[currMeme.selectedLineIdx]
-    // markTxtLIne(currMemeLine)
-    // document.querySelector('.txt-edit').value = currMemeLine.txt
-    // document.querySelector('.color-edit').value = currMemeLine.color
-
-
     renderMeme()
+    renderEditBtns()
 }
 
 function markTxtLIne({ posY, size }, startX = getSelectedLine().lineFrame.posX, width = getSelectedLine().lineFrame.width) {
@@ -183,20 +178,27 @@ function onDown(ev) {
         setLineFrame()
     }
     gStartPos = pos
-    if (isCursorOnEdge(pos, getSelectedLine())) getSelectedLine().isResize = true
+    if (isCursorOnEdge(pos, getSelectedLine())) {
+        getSelectedLine().isResize = true
+    }
 
     renderMeme()
     renderEditBtns()
 }
 
 function onMove(ev) {
+    // console.log(ev)
     if (!getMeme().lines[getMeme().selectedLineIdx]) return
     const pos = getEvPos(ev)
     const { isDrag, isResize } = getSelectedLine()
+    renderCursorOnEndge(pos, getSelectedLine())
 
     // if (isCursorOnEdge(pos, getSelectedLine())) {
-    //     renderCursorOnEndge(pos)
+    //     // renderCursorOnEndge(pos)
+    //     document.body.style.cursor = 'grabbing'
     // }
+    // else
+    //     document.body.style.cursor = 'context-menu'
 
     if (!isDrag && !isResize) return
 
@@ -204,7 +206,10 @@ function onMove(ev) {
     const dy = pos.y - gStartPos.y
 
     // if (isResize) {
-    //     resizeLine(dx)
+    //     resizeLine(dx, ev)
+    //     gStartPos = pos
+
+    //     renderMeme()
     //     return
     // }
 
@@ -214,8 +219,6 @@ function onMove(ev) {
     gStartPos = pos
 
     renderMeme()
-
-    // document.body.style.cursor = 'grabbing'
 }
 
 function onUp() {
@@ -234,16 +237,24 @@ function isCursorOnEdge(pos, { posY, size }) {
 function isCursorInLineFrame({ x, y }, line = getSelectedLine()) {
     const { posY, size, posX } = line
     gCtx.rect(3, posY - size, gElCanvas.width - 5, size + 10)
-    // console.log(posY , posX)
-    // console.log(x, y)
 
     return gCtx.isPointInPath(x, y)
 }
 
-function renderCursorOnEndge(pos) {
-    // gCtx.rect(getSelectedLine().lineFrame.posX, posY - size, getSelectedLine().lineFrame.width, size + 10)
-    if (gCtx.isPointInStroke(pos.x, pos.y)) document.body.style.cursor = 'col-resize'
-    else document.body.style.cursor = 'context-menu'
+function renderCursorOnEndge(pos, { posY, size }) {
+    gCtx.rect(getSelectedLine().lineFrame.posX, posY - size, getSelectedLine().lineFrame.width, size + 10)
+    if (gCtx.isPointInStroke(pos.x, pos.y) && getSelectedLine().lineFrame.posX === pos.x) {
+        document.body.style.cursor = 'col-resize'
+        return true
+    }
+    else if (gCtx.isPointInStroke(pos.x, pos.y) && getSelectedLine().lineFrame.width + getSelectedLine().lineFrame.posX === pos.x) {
+        document.body.style.cursor = 'col-resize'
+        return true
+    }
+    else {
+        document.body.style.cursor = 'context-menu'
+        return false
+    }
 }
 
 function getEvPos(ev) {
@@ -286,6 +297,10 @@ function resizeCanvas() {
 }
 
 function onSaveMeme() {
+    // document.querySelector('.saved-modal').classList.add('open-moadl')
+    // setTimeout(() => {
+    //     document.querySelector('.saved-modal').classList.remove('open-moadl')
+    // }, 2000)
     saveMeme()
 }
 
@@ -333,4 +348,28 @@ function onChangeFont(font) {
 
 function onCreateCustomMeme(ev) {
     createCustomMeme()
+    loadImageFromInput(ev, renderImg)
+}
+
+function loadImageFromInput(ev, onImageReady) {
+    const reader = new FileReader()
+    // After we read the file
+    reader.onload = function (event) {
+        let img = new Image() // Create a new html img element
+        img.src = event.target.result // Set the img src to the img file we read
+        // Run the callBack func, To render the img on the canvas
+        img.onload = onImageReady.bind(null, img)
+        // Can also do it this way:
+        // img.onload = () => onImageReady(img)
+    }
+    reader.readAsDataURL(ev.target.files[0]) // Read the file we picked
+}
+
+
+function renderImg(img) {
+    gMeme.imgUrl = img.src
+    renderCanvas()
+    renderMeme()
+    renderEditBtns()
+    toggleGalleryEditor('editor')
 }

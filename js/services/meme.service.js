@@ -34,8 +34,9 @@ function _createImgs() {
 
 function _savedMemesInit() {
     let savedMemes = loadFromStorage(SAVED_MEMES_STORAGE_KEY)
-    if (!gSavedMemes || !gSavedMemes.length) {
-        // console.log('hi')
+    console.log(savedMemes)
+    if (!savedMemes || !savedMemes.length) {
+        console.log('hi')
         savedMemes = []
     }
 
@@ -90,9 +91,9 @@ function setMeme(id) {
     gMeme = currMeme
 }
 
-function setLineFrame(x = 10, width = gElCanvas.width - 20) {
-    getSelectedLine().lineFrame.posX = x
-    getSelectedLine().lineFrame.width = width
+function setLineFrame(x = 0, width = gElCanvas.width) {
+    getSelectedLine().lineFrame.posX = x + 10
+    getSelectedLine().lineFrame.width = width - 20
 }
 
 function setLineTxt(txt) {
@@ -113,12 +114,12 @@ function setFontSize(multiplier) {
 }
 
 function switchLine() {
-    if (gMeme.selectedLineIdx >= gMeme.lines.length - 1)
+    if (gMeme.selectedLineIdx === gMeme.lines.length - 1)
         gMeme.selectedLineIdx = 0
     else
         gMeme.selectedLineIdx++
 
-    setIsClicked(true)
+    // setIsClicked(true)
 }
 
 function addLine() {
@@ -139,7 +140,7 @@ function createLine() {
         lineFrame: {
         }
     }
-  
+
 }
 
 function setIsClicked(isClicked) {
@@ -148,13 +149,6 @@ function setIsClicked(isClicked) {
 
 function isLineClicked(pos) {
     let isClicked = false
-    // gMeme.lines.forEach((line, idx) => {
-    //     if (isCursorInLineFrame(pos ,line)) {
-    //         console.log('hi')
-    //         gMeme.selectedLineIdx = idx
-    //         isClicked = true
-    //     }
-    // })
     gMeme.lines.forEach((line, idx) => {
         if (pos.y > line.posY - line.size && pos.y < line.posY + line.size + 10) {
             gMeme.selectedLineIdx = idx
@@ -174,7 +168,7 @@ function moveLine(dx, dy) {
     const selectedLine = getSelectedLine()
     selectedLine.posX += dx
     selectedLine.posY += dy
-    moveLineMark(dx)
+    // moveLineMark(dx)
 }
 
 function moveLineMark(dx) {
@@ -182,10 +176,13 @@ function moveLineMark(dx) {
     getSelectedLine().lineFrame.width += dx
 }
 
-function resizeLine(dx , {movementX}) {
+function resizeLine(dx, { movementX }) {
     // console.log('hi')
-    // if (dx > 0 && movementX > 0 ) getSelectedLine().lineFrame.width += dx
-    // else getSelectedLine().lineFrame.posX += dx
+    if (dx > 0 && movementX > 0 ) {
+        getSelectedLine().lineFrame.posX += dx
+        // getSelectedLine().lineFrame.posX += dx
+    }
+    else getSelectedLine().lineFrame.posX += dx
 }
 
 
@@ -203,8 +200,8 @@ function createRandMeme() {
         line.posX = getRandomIntInclusive(20, 200)
         line.posY = getRandomIntInclusive(50, 200)
         line.font = 'impact',
-        line.isDrag = false,
-        line.lineFrame = {}
+            line.isDrag = false,
+            line.lineFrame = {}
 
         lines.push(line)
     }
@@ -280,7 +277,25 @@ function getKeywordSearchCountMap() {
 }
 
 function createCustomMeme() {
-
+    const customMeme = {
+        selectedLineIdx: 0,
+        selectedImgId: -1,
+        lines: [
+            {
+                txt: 'FALAFEL!',
+                size: getRandomIntInclusive(20, 30),
+                align: 'left',
+                color: '#f00f0f',
+                posX: 100,
+                posY: 50,
+                isDrag: false,
+                font: 'impact',
+                lineFrame: {
+                }
+            }
+        ]
+    }
+    gMeme = customMeme
 }
 
 function getSelectedLine() {

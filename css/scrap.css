@@ -1,0 +1,76 @@
+/* @media (max-width: 420px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+
+} */
+
+@media (max-width: 1200px) {
+
+    .editor-container {
+        /* justify-content: space-between; */
+        position: relative;
+        justify-content: center;
+    }
+
+    .canvas-features {
+        background-color: inherit;
+        flex-direction: row;
+        /* width: 1px;
+        height: 1px; */
+    }
+
+    .canvas-features>* {
+        /* position: absolute; */
+    }
+
+    .edit-text-features {
+        background-color: inherit;
+        display: flex;
+        flex-direction: column;
+        max-width: 105px;
+    }
+
+    .txt-edit {
+        position: absolute;
+        top: -80px;
+        left: 0;
+        /* transform: translateX(-50%); */
+    }
+
+    .txt-edit-lbl {
+        display: block;
+    }
+
+    .update-features {
+        position: absolute;
+        bottom: -80px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .change-line-features {
+        display: flex;
+        position: absolute;
+        top: -80px;
+        left: 32vw
+        /* flex-direction: column; */
+    }
+
+    .emoji-selector {
+        position: absolute;
+        top: -80px;
+        left: 60vw
+    }
+
+    /* .color-lbl {
+        position: absolute;
+        top: -80px;
+        left: 0;
+    } */
+
+    .edit-text-features > select {
+        font-size: 13px;
+    }
+
+}

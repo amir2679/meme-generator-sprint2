@@ -90,7 +90,7 @@ function renderKeywords(keywordSearchCountMap) {
     for (const keyword in keywordSearchCountMap) {
         let size = keywordSearchCountMap[keyword]
         strKeywords += `
-        <span style="font-size:${size*1.2 + 20}px">${keyword}</span>`
+        <span class="keyword" style="font-size:${size*1.2 + 20}px">${keyword},</span>`
     }
     // console.log(strKeywords)
     let elKeywords = document.querySelector('.key-words')
@@ -100,7 +100,7 @@ function renderKeywords(keywordSearchCountMap) {
 
 function onSaveImg(elLink) {
     const imgContent = gElCanvas.toDataURL('image/jpeg')
-    console.log(imgContent)
+    // console.log(imgContent)
     setImgContent(imgContent)
 }
 
