@@ -119,6 +119,7 @@ function onSetImgFilter(txt) {
 function onKeywordsClick(elKeyword) {
     const fontNumSize = +elKeyword.style.fontSize.split('px')[0]
     gFilterByTxt = elKeyword.innerText
+    document.querySelector('.search').value = gFilterByTxt
     renderImgs()
     if(fontNumSize > 45)    return
     elKeyword.style.fontSize = `${fontNumSize * 1.1}px`
