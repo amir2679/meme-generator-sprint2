@@ -118,6 +118,7 @@ function onSetImgFilter(txt) {
 
 function onKeywordsClick(elKeyword) {
     const fontNumSize = +elKeyword.style.fontSize.split('px')[0]
+    if(fontNumSize > 45)    return
     elKeyword.style.fontSize = `${fontNumSize * 1.1}px`
 }
 
