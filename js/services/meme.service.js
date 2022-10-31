@@ -270,7 +270,10 @@ function locateLine(direction) {
 }
 
 function changeFont(font) {
-    gMeme.lines[gMeme.selectedLineIdx].font = font
+    gMeme.lines.forEach(line => {
+        line.font = font
+    });
+    // gMeme.lines[gMeme.selectedLineIdx].font = font
 }
 
 function setImgFilter(txt) {
