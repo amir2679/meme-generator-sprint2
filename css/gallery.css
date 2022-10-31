@@ -26,6 +26,7 @@
     justify-items: center;
     justify-content: center;
     margin: 0 3rem;
+    padding-bottom: 1rem;
 }
 
 .gallery img {
@@ -37,6 +38,12 @@
 
 .grid-item {
     border-radius: 20px;
+    transition: .4s;
+}
+
+.grid-item:hover {
+    opacity: 0.5;
+    cursor: pointer;
 }
 
 
@@ -62,7 +69,8 @@
 
 .gallery-header .search {
     color: #383b42;
-    align-self: stretch;
+    max-width: 400px;
+    padding-left: 10px;
     /* max-width: 500px; */
     /* background-color: var(--clr5); */
     /* flex-grow: 2; */
@@ -75,14 +83,23 @@
     border-radius: 10em;
     text-align: center;
     flex-grow: 2;
+    display: flex;
+    justify-content: space-around;
+    padding-right: 5px;
+    padding-left: 5px;
     /* white-space: nowrap; */
 }
 
+.key-words span {
+    transition: .4s;
+}
+
+.key-words span:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
 .gallery-nav {
-    /* align-items: center; */
-    /* justify-content: space-between; */
-    /* flex-grow: 1.5; */
-    /* align-self: flex-end; */
     width: 100%;
 }
 
@@ -100,60 +117,3 @@
 .key-words>* {
     margin-right: 3px;
 }
-
-
-/* .gallery-header button {
-    background-color: var(--clr3);
-    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
-} */
-
-/* GALLERY */
-
-/* .gallery-container {
-    background-color: var(--clr2);
-    border-radius: 10px;
-    padding: 15px;
-    flex-direction: column;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-template-rows: repeat(auto-fill, minmax(200px, 1fr));
-    grid-auto-rows: 200px;
-    gap: 25px 30px;
-    justify-content: center;
-    justify-items: center;
-} */
-
-
-
-/* GALLERY HEADER */
-
-/* .gallery-header .search {
-    background-color: var(--clr1);
-    border-radius: 30px;
-    color: var(--clr2);
-    font-family: poppins;
-    font-size: 1.3125rem;
-}
-
-.gallery-header .search,
-.key-words {
-    width: 100%;
-}
-
-.gallery-header {
-    margin: 20px 50px;
-    align-items: center;
-    gap: 10px;
-}
-
-.key-words {
-    text-align: center;
-    box-shadow: 0 3px 6px 1px rgba(0, 0, 0, 0.15);
-    border-radius: 25px;
-    background-color: #fefefe;
-    opacity: 0.4;
-    padding: 10px 0;
-} */

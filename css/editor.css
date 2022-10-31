@@ -4,6 +4,7 @@
 .editor-container {
     justify-content: space-around;
     margin: 65px 0;
+    padding-bottom: 20px;
     /* align-items: center; */
     /* height: 100%; */
     /* max-width: 60vw;
@@ -155,6 +156,21 @@ canvas {
     grid-area: emoji-selector;
     border-radius: 45px;
     background-color: #ffffff;
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.emoji-selector span {
+    transition: .4s;
+    opacity: .8;
+}
+
+.emoji-selector span:hover{
+    position: relative;
+    top: -5px;
+    cursor: pointer;
+    opacity: 1;
+    /* font-size: 2rem; */
 }
 
 .update-features {
@@ -202,6 +218,7 @@ canvas {
     background-color: #e05d5b;
     box-shadow: 1px 6px 0 #e05d5b, inset 0 5px 0 #ffffff;
     text-decoration: none;
+    position: relative;
 }
 
 .update-features>*:not(:last-child) {

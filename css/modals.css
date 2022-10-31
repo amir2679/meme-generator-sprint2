@@ -37,3 +37,26 @@
     opacity: 0;
     display: none;
 }
+
+.save-modal {
+    width: 100px;
+    height: 100px;
+    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
+    border-radius: 30px;
+    text-align: center;
+    opacity: 1;
+    position: absolute;
+    top: 0;
+    right: 10%;
+
+    transform: translateX(50%);
+    transition: .4s;
+
+}
+
+.hide-save-modal {
+    opacity: 0;
+    /* display: none; */
+    top: -20%;
+    overflow: hidden;
+}

@@ -4,6 +4,7 @@ let gCtx
 let gStartPos
 const TOUCH_EVS = ['touchstart', 'touchmove', 'touchend']
 let gTotalMovementX = 0
+let gCircles = []
 // let gLineFrame
 
 function onInit() {
@@ -19,11 +20,11 @@ function onInit() {
 function renderMeme() {
     let meme = getMeme()
     let imgUrl
-    imgUrl = getImgs().find((img) => img.id === meme.selectedImgId).url
+    imgUrl = gMeme.customImgUrl
+    if(!imgUrl) imgUrl = getImgs().find((img) => img.id === meme.selectedImgId).url
     const img = new Image()
     img.src = imgUrl
     img.ratio = img.width / img.height
-    // console.log(img.ratio)
     img.onload = () => {
         gElCanvas.width = gElCanvas.height * img.ratio
         gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height)
@@ -50,9 +51,10 @@ function drawText() {
         //     // item[2] is the y coordinate to fill the text at
         //     gCtx.strokeStyle = color
         //     gCtx.fillStyle = color
-        //     gCtx.fillText(item[0], item[1], item[2], item[1] + gCtx.measureText(item[0]).width);
+        //     gCtx.fillText(item[0], item[1], item[2]);
         //     // gCtx.strokeText(item[0], item[1], item[2])
         // })
+
         gCtx.font = `${size}px ${font}`
         gCtx.strokeStyle = color
         gCtx.fillStyle = color
@@ -135,9 +137,14 @@ function onSwitchLine() {
     renderEditBtns()
 }
 
-function markTxtLIne({ posY, size }, startX = getSelectedLine().lineFrame.posX, width = getSelectedLine().lineFrame.width) {
+function markTxtLIne({ posY, size, posX, txt }, startX = getSelectedLine().lineFrame.posX, width = getSelectedLine().lineFrame.width) {
     gCtx.strokeStyle = 'black'
-    gCtx.strokeRect(startX, posY - size, width, size + 10)
+    gCtx.strokeRect(posX, posY - size, gCtx.measureText(txt).width, size + 10)
+
+    drawCircle(posX, posY - size, 'left')
+    drawCircle(posX, posY + 10, 'left')
+    drawCircle(posX + gCtx.measureText(txt).width, posY + 10, 'right')
+    drawCircle(posX + gCtx.measureText(txt).width, posY - size, 'right')
 }
 
 function onAddLine() {
@@ -173,13 +180,23 @@ function onDown(ev) {
     const pos = getEvPos(ev)
     if (!isLineClicked(pos)) return
 
-    setLineDrag(true, getSelectedLine())
-    if (!Object.keys(getSelectedLine().lineFrame).length) {
-        setLineFrame()
-    }
+    // setLineDrag(true, getSelectedLine())
+    // if (!Object.keys(getSelectedLine().lineFrame).length) {
+    //     setLineFrame()
+    // }
     gStartPos = pos
-    if (isCursorOnEdge(pos, getSelectedLine())) {
+    // if (isCursorOnEndge(pos, getSelectedLine())) {
+    //     getSelectedLine().isResize = true
+    // }
+    if (isCursorOnCircle(pos)) {
         getSelectedLine().isResize = true
+        document.body.style.cursor = 'ne-resize'
+        return
+    }
+
+
+    if (isCursorInPath(pos, getSelectedLine())) {
+        getSelectedLine().isDrag = true
     }
 
     renderMeme()
@@ -188,69 +205,84 @@ function onDown(ev) {
 
 function onMove(ev) {
     // console.log(ev)
-    if (!getMeme().lines[getMeme().selectedLineIdx]) return
+    if (!getSelectedLine()) return
     const pos = getEvPos(ev)
     const { isDrag, isResize } = getSelectedLine()
-    renderCursorOnEndge(pos, getSelectedLine())
 
-    // if (isCursorOnEdge(pos, getSelectedLine())) {
-    //     // renderCursorOnEndge(pos)
-    //     document.body.style.cursor = 'grabbing'
-    // }
-    // else
-    //     document.body.style.cursor = 'context-menu'
-
-    if (!isDrag && !isResize) return
+    if (!isDrag && !isResize) {
+        if (isCursorOnCircle(pos)) document.body.style.cursor = 'ne-resize'
+        else document.body.style.cursor = 'context-menu'
+        return
+    }
 
     const dx = pos.x - gStartPos.x
     const dy = pos.y - gStartPos.y
 
-    // if (isResize) {
-    //     resizeLine(dx, ev)
-    //     gStartPos = pos
-
-    //     renderMeme()
-    //     return
-    // }
-
     // if (pos.x >= gElCanvas.width || pos.y >= gElCanvas.height) return
 
+    if (isResize) {
+        txtResize(dx, getClickedCircle(), ev)
+        gStartPos = pos
+
+        renderMeme()
+        return
+    }
+
+    // document.body.style.cursor = 'grabbing'
     moveLine(dx, dy)
     gStartPos = pos
 
     renderMeme()
 }
 
+function getClickedCircle() {
+    return gCircles.find(circle => circle.isClicked)
+}
+
 function onUp() {
     setLineDrag(false)
     getSelectedLine().isResize = false
-    // document.body.style.cursor = 'context-menu'
+    gCircles = []
+    document.body.style.cursor = 'context-menu'
 
     // gCtx.beginPath()
 }
 
-function isCursorOnEdge(pos, { posY, size }) {
-    gCtx.rect(getSelectedLine().lineFrame.posX, posY - size, getSelectedLine().lineFrame.width, size + 10)
-    return gCtx.isPointInStroke(pos.x, pos.y)
+function isCursorOnCircle(pos) {
+    let isOnCircle = false
+    gCircles.forEach((circle, idx) => {
+        const distance = Math.sqrt((circle.x - pos.x) ** 2 + (circle.y - pos.y) ** 2)
+        // getSelectedLine().isResize = (distance <= circle.size) ? true : false
+        if (distance <= circle.size) {
+            isOnCircle = true
+            gCircles[idx].isClicked = true
+        }
+    })
+
+    return isOnCircle
 }
 
-function isCursorInLineFrame({ x, y }, line = getSelectedLine()) {
-    const { posY, size, posX } = line
-    gCtx.rect(3, posY - size, gElCanvas.width - 5, size + 10)
-
-    return gCtx.isPointInPath(x, y)
+function isCursorInPath(pos, { posY, size, posX, txt, font }) {
+    gCtx.rect(posX, posY - size, gCtx.measureText(txt).width + posX, size + 10)
+    return gCtx.isPointInPath(pos.x, pos.y)
 }
 
-function renderCursorOnEndge(pos, { posY, size }) {
-    gCtx.rect(getSelectedLine().lineFrame.posX, posY - size, getSelectedLine().lineFrame.width, size + 10)
-    if (gCtx.isPointInStroke(pos.x, pos.y) && getSelectedLine().lineFrame.posX === pos.x) {
+
+
+
+function renderCursorOnEndge(pos, { posY, size, posX, txt, font }) {
+    gCtx.rect(posX, posY - size, gCtx.measureText(txt).width + posX, size + 10)
+    gCtx.font = `${size}px ${font}`
+
+    if (gCtx.isPointInStroke(pos.x, pos.y)) {
         document.body.style.cursor = 'col-resize'
+        // console.log('hi')
         return true
     }
-    else if (gCtx.isPointInStroke(pos.x, pos.y) && getSelectedLine().lineFrame.width + getSelectedLine().lineFrame.posX === pos.x) {
-        document.body.style.cursor = 'col-resize'
-        return true
-    }
+    // else if (gCtx.isPointInStroke(pos.x, pos.y) && gCtx.measureText(txt).width + posX <= pos.x + 1 &&  gCtx.measureText(txt).width >= pos.x - 1) {
+    //     document.body.style.cursor = 'col-resize'
+    //     return true
+    // }
     else {
         document.body.style.cursor = 'context-menu'
         return false
@@ -288,19 +320,26 @@ function renderCanvas() {
     // need render?
 }
 
-function resizeCanvas() {
-    const elContainer = document.querySelector('.canvas-container')
-    // console.log(gElCanvas.offsetWidth , gElCanvas.height)
-    gElCanvas.width = elContainer.offsetWidth
+function resizeCanvas(ratio = '') {
+    const elCanvasContainer = document.querySelector('.canvas-container')
+    gElCanvas.width = elCanvasContainer.offsetWidth
+    console.log(gElCanvas.width)
+    gElCanvas.width = elCanvasContainer.offsetheight
     const elBody = document.querySelector('body')
+}
 
+function resizeCanvasByRatio(ratio) {
+    const elCanvasContainer = document.querySelector('.canvas-container')
+    let containerWidth = elCanvasContainer.offsetWidth
+    const containerHeight = elCanvasContainer.offsetHeight
+    // console.log(elCanvasContainer.style.width)
+    // console.log(containerWidth , containerHeight)
+    containerWidth = containerHeight * ratio
+    elCanvasContainer.style.width = `${containerWidth}px`
+    // console.log(elCanvasContainer.style.width)
 }
 
 function onSaveMeme() {
-    // document.querySelector('.saved-modal').classList.add('open-moadl')
-    // setTimeout(() => {
-    //     document.querySelector('.saved-modal').classList.remove('open-moadl')
-    // }, 2000)
     saveMeme()
 }
 
@@ -347,8 +386,9 @@ function onChangeFont(font) {
 }
 
 function onCreateCustomMeme(ev) {
+    // debugger
     createCustomMeme()
-    loadImageFromInput(ev, renderImg)
+    loadImageFromInput(ev, setCustomImgContent)
 }
 
 function loadImageFromInput(ev, onImageReady) {
@@ -366,10 +406,38 @@ function loadImageFromInput(ev, onImageReady) {
 }
 
 
-function renderImg(img) {
-    gMeme.imgUrl = img.src
+function renderImg() {
     renderCanvas()
     renderMeme()
-    renderEditBtns()
     toggleGalleryEditor('editor')
+}
+
+function setCustomImgContent(imgContent) {
+    // console.log(imgContent.src)
+    // imgContent = imgContent.split('"')[1]
+    // console.log(imgContent)
+    const meme = getMeme()
+    meme.customImgUrl = imgContent.src
+    renderMeme()
+    toggleGalleryEditor('editor')
+}
+
+function drawCircle(x, y, side, size = 3, color = 'black') {
+    gCtx.beginPath()
+    gCtx.lineWidth = '6'
+    gCtx.arc(x, y, size, 0, 2 * Math.PI)
+    gCtx.strokeStyle = 'white'
+    gCtx.stroke()
+    gCtx.fillStyle = color
+    gCtx.fill()
+    gCircles.push({ x, y, size, isClicked: false, side })
+}
+
+function onAddEmoji(elEmoji) {
+    addLine()
+    getMeme().lines[getMeme().lines.length - 1].txt = elEmoji.innerText
+
+    console.log(getMeme().lines[getMeme().lines.length - 1].txt)
+
+    renderMeme()
 }

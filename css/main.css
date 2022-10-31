@@ -53,6 +53,7 @@ body {
     margin: 0;
     padding: 15px;
     height: 100%;
+    padding-bottom: 15px;
 }
 
 img {
@@ -72,7 +73,8 @@ img {
     height: 73px;
     margin-bottom: 15px;
     padding-inline-start: 80px;
-    padding-inline-end: 250px;
+    padding-inline-end: 80px;
+    /* padding-inline-end: 250px; */
     justify-content: space-between;
     align-items: center;
 }
@@ -81,6 +83,85 @@ img {
     width: 150px;
     color: #fefefe;
     font-size: 1.375rem;
+}
+
+
+/* Navbar container */
+.navbar {
+    overflow: hidden;
+    font-family: Arial;
+}
+
+/* Links inside the navbar */
+/* .navbar a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+} */
+
+/* The dropdown container */
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+/* Dropdown button */
+.dropdown {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Add a red background color to navbar links on hover */
+/* .navbar a:hover,
+.dropdown:hover .dropbtn {
+    background-color: red;
+} */
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    /* display: none; */
+    background-color: var(--clr3);
+    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
+    top: -45%;
+    position: absolute;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    text-align: center;
+    transition: .4s;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    float: none;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: start;
+    background-color: var(--clr3);
+    background-image: linear-gradient(-86deg, #33be6d 0%, #0c98b9 100%);
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+    opacity: .5;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    /* display: block; */
+    top: 10%;
 }
 
 
@@ -94,7 +175,8 @@ button,
     color: var(--clr4);
 }
 
-button:hover , .btn:hover {
+button:hover,
+.btn:hover {
     cursor: pointer;
 }
 

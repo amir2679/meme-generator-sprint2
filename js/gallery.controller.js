@@ -1,5 +1,7 @@
 'use strict'
 
+renderSearchBar()
+
 function renderImgs() {
     let imgs = getImgs()
     var strHTMLS = imgs.map((img) =>
@@ -7,9 +9,8 @@ function renderImgs() {
         <img onclick="onImgSelect(this)" class="grid-item" src="${img.url}"  data-imgId="${img.id}">
         `
     )
-    // console.log(strHTMLS)
     document.querySelector('.grid-container').innerHTML = strHTMLS.join('')
-    // console.log(document.querySelector('.gallery-container'))
+
 
 }
 
@@ -39,9 +40,10 @@ function onImgSelect(elImg) {
     // console.log('hi')
     // document.querySelector('.txt-edit').value = ''
     setImg(elImg.dataset.imgid)
+    // resizeCanvas()
+    // renderCanvas()
     renderMeme()
     renderEditBtns()
-    resizeCanvas()
 
     toggleGalleryEditor('editor')
 }
@@ -61,7 +63,7 @@ function onGenerateRandMeme() {
 }
 
 function onOpenSavedMemes() {
-    loadSavedMemes()
+    // loadSavedMemes()
     // _savedMemesInit()
     console.log(gSavedMemes)
     if (!getSavedMemes() || !getSavedMemes().length) return
@@ -90,7 +92,7 @@ function renderKeywords(keywordSearchCountMap) {
     for (const keyword in keywordSearchCountMap) {
         let size = keywordSearchCountMap[keyword]
         strKeywords += `
-        <span class="keyword" style="font-size:${size*1.2 + 20}px">${keyword},</span>`
+        <span onclick="onKeywordsClick(this)" class="keyword" style="font-size:${size * 0.3 + 16}px">${keyword}</span>`
     }
     // console.log(strKeywords)
     let elKeywords = document.querySelector('.key-words')
@@ -100,6 +102,10 @@ function renderKeywords(keywordSearchCountMap) {
 
 function onSaveImg(elLink) {
     const imgContent = gElCanvas.toDataURL('image/jpeg')
+    document.querySelector('.save-modal').classList.remove('hide-save-modal')
+    setTimeout(() => {
+        document.querySelector('.save-modal').classList.add('hide-save-modal')
+    }, 1000)
     // console.log(imgContent)
     setImgContent(imgContent)
 }
@@ -108,4 +114,20 @@ function onSetImgFilter(txt) {
     setImgFilter(txt)
     renderKeywords(getKeywordSearchCountMap())
     renderImgs()
+}
+
+function onKeywordsClick(elKeyword) {
+    const fontNumSize = +elKeyword.style.fontSize.split('px')[0]
+    elKeyword.style.fontSize = `${fontNumSize * 1.1}px`
+}
+
+function renderSearchBar() {
+    let strHTMLS = ''
+    for (const key in gKeywordSearchCountMap) {
+        strHTMLS += `<option value="${key}">`
+    }
+
+
+    console.log(strHTMLS)
+    document.querySelector('.search-options').innerHTML = strHTMLS
 }

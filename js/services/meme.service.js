@@ -1,11 +1,11 @@
 'use strict'
 
 const SAVED_MEMES_STORAGE_KEY = 'memesDB'
-let gSavedMemes = []
+let gSavedMemes
 let gImgs = []
 let gMeme
 let gFilterByTxt
-let gKeywordSearchCountMap = { 'baby': 12, 'president': 2, 'woman': 20, 'man': 1, 'animel': 5, 'movie': 3, 'kiss': 2 }
+let gKeywordSearchCountMap = { 'baby': 30, 'president': 2, 'woman': 40, 'man': 1, 'animel': 5, 'movie': 3, 'kiss': 2 }
 const imgsKeywords = [
     ['woman'], ['president', 'man'], ['animel'], ['baby', 'animel'],
     ['baby'], ['animel'], ['man'], ['baby'],
@@ -39,8 +39,9 @@ function _savedMemesInit() {
         console.log('hi')
         savedMemes = []
     }
-
+    // console.log(gSavedMemes)
     gSavedMemes = savedMemes
+    // console.log(gSavedMemes)
     saveToStorage(SAVED_MEMES_STORAGE_KEY, gSavedMemes)
 }
 
@@ -67,7 +68,7 @@ function setMeme(id) {
                 align: 'left',
                 color: '#f00f0f',
                 posX: 100,
-                posY: 50,
+                posY: 200,
                 isDrag: false,
                 font: 'impact',
                 lineFrame: {
@@ -78,7 +79,7 @@ function setMeme(id) {
                 size: getRandomIntInclusive(30, 40),
                 align: 'left',
                 color: '#f00f0f',
-                posX: 130,
+                posX: 230,
                 posY: 130,
                 isDrag: false,
                 font: 'impact',
@@ -91,7 +92,7 @@ function setMeme(id) {
     gMeme = currMeme
 }
 
-function setLineFrame(x = 0, width = gElCanvas.width) {
+function setLineFrame(x = getSelectedLine().posX, width = gCtx.measureText(getSelectedLine().txt).width) {
     getSelectedLine().lineFrame.posX = x + 10
     getSelectedLine().lineFrame.width = width - 20
 }
@@ -133,8 +134,8 @@ function createLine() {
         size: 40,
         align: 'left',
         color: '#f00f0f',
-        posX: 300,
-        posY: 300,
+        posX: getRandomIntInclusive(20, 500 - 50),
+        posY: getRandomIntInclusive(20, 500 - 50),
         isDrag: false,
         font: 'impact',
         lineFrame: {
@@ -176,13 +177,22 @@ function moveLineMark(dx) {
     getSelectedLine().lineFrame.width += dx
 }
 
-function resizeLine(dx, { movementX }) {
-    // console.log('hi')
-    if (dx > 0 && movementX > 0 ) {
-        getSelectedLine().lineFrame.posX += dx
-        // getSelectedLine().lineFrame.posX += dx
+function txtResize(dx, { side }) {
+    //gCircles[0].x
+
+    if (side === 'right') {
+        if (getSelectedLine().size < 10 && dx < 0) {
+            return
+        }
+        getSelectedLine().size += dx
     }
-    else getSelectedLine().lineFrame.posX += dx
+
+    if (side === 'left') {
+        if (getSelectedLine().size < 10 && dx > 0) {
+            return
+        }
+        getSelectedLine().size -= dx
+    }
 }
 
 
@@ -248,13 +258,13 @@ function deleteLine() {
 function locateLine(direction) {
     switch (direction) {
         case 'left':
-            gMeme.lines[gMeme.selectedLineIdx].posX = 10
+            getSelectedLine().posX = 10
             break;
         case 'right':
-            gMeme.lines[gMeme.selectedLineIdx].posX = gElCanvas.width - gCtx.measureText(gMeme.lines[gMeme.selectedLineIdx].txt).width
+            getSelectedLine().posX = gElCanvas.width - gCtx.measureText(getSelectedLine().txt).width - 10
             break;
         case 'middle':
-            gMeme.lines[gMeme.selectedLineIdx].posX = (gElCanvas.width - gCtx.measureText(gMeme.lines[gMeme.selectedLineIdx].txt).width) / 2
+            getSelectedLine().posX = (gElCanvas.width - gCtx.measureText(getSelectedLine().txt).width) / 2    
             break;
     }
 }
@@ -282,7 +292,7 @@ function createCustomMeme() {
         selectedImgId: -1,
         lines: [
             {
-                txt: 'FALAFEL!',
+                txt: 'YOUR MEME!',
                 size: getRandomIntInclusive(20, 30),
                 align: 'left',
                 color: '#f00f0f',
